@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>KelasCerdas Mobile – Prototipe LMS</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+            accent: { 500:'#10b981',600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    .card-hover { transition: transform 0.15s, box-shadow 0.15s; }
+    .card-hover:active { transform: scale(0.98); }
+    .badge-pulse { animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .progress-ring { transition: stroke-dashoffset 0.5s; }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 transition-colors">
+
+  <!-- ========== APP CONTAINER ========== -->
+  <div id="app" class="min-h-full flex flex-col">
+
+    <!-- ========== LOGIN SCREEN ========== -->
+    <div id="screen-login" class="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-primary-600 to-primary-800">
+      <div class="w-full max-w-md">
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/20 backdrop-blur mb-4">
+            <i class="fas fa-graduation-cap text-4xl text-white"></i>
+          </div>
+          <h1 class="text-3xl font-bold text-white">KelasCerdas</h1>
+          <p class="text-primary-100 mt-1">LMS Mobile-First untuk Guru & Siswa</p>
+        </div>
+
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6">
+          <div class="flex gap-2 mb-6">
+            <button onclick="setLoginRole('guru')" id="btn-role-guru" class="flex-1 py-2.5 rounded-xl font-medium bg-primary-600 text-white">
+              <i class="fas fa-chalkboard-teacher mr-1"></i> Guru
+            </button>
+            <button onclick="setLoginRole('siswa')" id="btn-role-siswa" class="flex-1 py-2.5 rounded-xl font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+              <i class="fas fa-user-graduate mr-1"></i> Siswa
+            </button>
+          </div>
+
+          <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Email</label>
+              <input type="email" id="login-email" required
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 outline-none"
+                placeholder="guru@demo.com / siswa@demo.com" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Password</label>
+              <input type="password" id="login-password" required value="demo123"
+                class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 outline-none"
+                placeholder="demo123" />
+            </div>
+            <button type="submit" class="w-full py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-semibold transition">
+              Masuk
+            </button>
+          </form>
+
+          <div class="mt-5 p-3 bg-primary-50 dark:bg-slate-700/50 rounded-xl text-sm">
+            <p class="font-medium text-primary-700 dark:text-primary-300 mb-1"><i class="fas fa-info-circle mr-1"></i> Akun Demo</p>
+            <p class="text-slate-600 dark:text-slate-400">Guru: <code>guru@demo.com</code></p>
+            <p class="text-slate-600 dark:text-slate-400">Siswa: <code>siswa@demo.com</code></p>
+            <p class="text-slate-600 dark:text-slate-400">Password: <code>demo123</code></p>
+          </div>
+        </div>
+
+        <p class="text-center text-primary-100 text-sm mt-6">Prototipe v0.1 • Mobile & Web</p>
+      </div>
+    </div>
+
+    <!-- ========== MAIN APP (after login) ========== -->
+    <div id="screen-main" class="hidden min-h-screen flex flex-col">
+
+      <!-- Top Navbar -->
+      <header class="sticky top-0 z-40 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+              <i class="fas fa-bars"></i>
+            </button>
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center">
+                <i class="fas fa-graduation-cap text-white text-sm"></i>
+              </div>
+              <span class="font-bold text-lg hidden sm:inline">KelasCerdas</span>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Notifications -->
+            <button onclick="showToast('Tidak ada notifikasi baru')" class="relative p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+              <i class="fas fa-bell"></i>
+              <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- Dark mode -->
+            <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">
+              <i class="fas fa-moon dark:hidden"></i>
+              <i class="fas fa-sun hidden dark:inline"></i>
+            </button>
+            <!-- Profile -->
+            <div class="relative">
+              <button onclick="toggleProfileMenu()" class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700">
+                <div id="avatar" class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white text-sm font-bold">G</div>
+                <span id="nav-name" class="hidden sm:inline text-sm font-medium">Guru</span>
+              </button>
+              <div id="profile-menu" class="hidden absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 py-1 z-50">
+                <button onclick="navigate('profile')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-2">
+                  <i class="fas fa-user w-5"></i> Profil & Badge
+                </button>
+                <button onclick="logout()" class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2">
+                  <i class="fas fa-sign-out-alt w-5"></i> Keluar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="flex-1 flex">
+        <!-- Sidebar (desktop) -->
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 transform -translate-x-full lg:translate-x-0 transition-transform duration-200 pt-14 lg:pt-0">
+          <nav class="p-4 space-y-1" id="sidebar-nav">
+            <!-- filled by JS based on role -->
+          </nav>
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/40 z-20 hidden lg:hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+          <div class="max-w-6xl mx-auto p-4 sm:p-6" id="main-content">
+            <!-- dynamic content -->
+          </div>
+        </main>
+      </div>
+
+      <!-- Bottom Nav (mobile only) -->
+      <nav id="bottom-nav" class="lg:hidden sticky bottom-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 safe-bottom z-30">
+        <div class="flex justify-around py-2" id="bottom-nav-items">
+          <!-- filled by JS -->
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 hidden">
+    <div class="bg-slate-800 dark:bg-slate-700 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+      <i class="fas fa-check-circle text-green-400"></i>
+      <span id="toast-msg"></span>
+    </div>
+  </div>
+
+  <!-- Modal container -->
+  <div id="modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50">
+    <div id="modal-content" class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"></div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
